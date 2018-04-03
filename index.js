@@ -100,6 +100,6 @@ client.execute('taobao.product.get', {
 });
 */
 
-app.listen(app.get('port'), function() {
-    console.log('Node app is running on port', app.get('port'));
-  });
+/*tells our application to listen on the specified port*/
+app.listen(config.port);
+console.log("App running on port " + config.port)
