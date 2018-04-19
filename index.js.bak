@@ -5,11 +5,9 @@ var mongo = require('mongodb');
 var db = require('./config/database');
 var config = require('./config/config').app;
 const Json2csv = require('json2csv').Parser;
-/*
 var Iconv  = require('iconv').Iconv;
 var utf2euckr = new Iconv('UTF-8', 'EUC-KR');
 var utf2euccn = new Iconv('UTF-8', 'EUC-CN');
-*/
 var fs = require('fs');
 var flatten = require('flat');
 var json2xls = require('json2xls');
@@ -20,6 +18,8 @@ app.set('port', (process.env.PORT || config.port));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.get('/', (req,res)=> res.send("Testing Taobao API"));
+
 var ApiClient = require('./api-client/top-sdk/index').ApiClient;
 
 const client = new ApiClient({
@@ -28,7 +28,7 @@ const client = new ApiClient({
   'url':'http://gw.api.taobao.com/router/rest'
 });
 
-/*
+
 console.log("Testing taobao.item.seller.get");
 client.execute('taobao.item.seller.get', {
   'session' :'61000051ff9e5102f2b320f2a2e773f0dafecc6ca1e5bd13031625218',
@@ -50,7 +50,7 @@ client.execute('taobao.item.seller.get', {
    }
     console.log(error);
 });
-*/
+
 
 console.log("Testing taobao.trades.sold.get");
 client.execute('taobao.trades.sold.get', {
@@ -75,33 +75,6 @@ client.execute('taobao.trades.sold.get', {
       }
     });
 
-/* GET home page. */
-var tablebody = require('tableify');
-var html = tablebody(flattenOrders);
-
-fields = [{label: 'order number', value: 'tid'},
-{label: '상태', value:'status'},{label:'SKU', value:'orders.order_0.outer_sku_id'},
-{label:'상품영',value:'orders_order_0_title'},
-{label: '지불액', value:'payment'},{label:'배송타입',value:'shipping_type'},
-{label:'Receiver',value:'receiver_name'},{label:'Province',value:'receiver_state'},
-{label:'시',value:'receiver_city'},{label:'구',value:'receiver_district'},
-{label:'주소',value:'receiver_address'},{label:'우편번호',value:'receiver_zip'},
-{label:'휴대폰',value:'receiver_mobile'}];
-
-var orderCsv = new Json2csv({ fields });
-var csv = orderCsv.parse(flattenOrders, { fields });
- 
-console.log(csv);
-html = tablebody(flattenOrders);
-
-app.get('/', function(req, res, next) {
-  res.render('index', { 
-    title: 'KEYCLUE 주문수집시스템',
-    notice: '주문일자와 범위를 입력하십시오.',
-    table: html
-   });
-});
-
 /*
     fields = [{label: 'order number', value: 'tid'},
     {label: '상태', value:'status'},{label:'SKU', value:'orders_order_0_outer_sku_id'},
@@ -112,14 +85,24 @@ app.get('/', function(req, res, next) {
     {label:'주소',value:'receiver_address'},{label:'우편번호',value:'receiver_zip'},
     {label:'mobile phone',value:'receiver_mobile'}];
 */
-      var xls = json2xls(flattenOrders,{ 
-        fields: ['created','title','buyer_nick','pay_time','receiver_name','receiver_mobile','receiver_zip','receiver_state','receiver_city','receiver_district','receiver_address','orders_order_0_outer_sku_id','payment','num','orders_order_0_title']
+
+var orderCsv = new Json2csv({ fields });
+var csv = orderCsv.parse(myCars, { fields });
+ 
+console.log(csv);
+
+/*
+
+      var xls = json2xls(csv,{ 
+        fields: ['created','title','buyer_nick','pay_time','receiver_name','receiver_mobile','receiver_zip',
+        'receiver_state','receiver_city','receiver_district','receiver_address','orders_order_0_outer_sku_id',
+        'payment','num','orders_order_0_title']
       });
       
       fs.writeFileSync('tmallOrders.xlsx', xls, 'binary');
   }
-  console.log(error);
-});
+  console.log(error);*/
+};
 
 /*
 client.execute('taobao.trade.fullinfo.get', {
@@ -129,7 +112,7 @@ client.execute('taobao.trade.fullinfo.get', {
 }, function(error, response) {
   if (!error) {
     console.log("fullinfo OK");
-    console.log(response);
+//    console.log(response);
   }
   else console.log(error);
 })

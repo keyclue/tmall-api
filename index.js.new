@@ -4,12 +4,10 @@ var path = require('path');
 var mongo = require('mongodb');
 var db = require('./config/database');
 var config = require('./config/config').app;
-const Json2csv = require('json2csv').Parser;
-/*
-var Iconv  = require('iconv').Iconv;
-var utf2euckr = new Iconv('UTF-8', 'EUC-KR');
-var utf2euccn = new Iconv('UTF-8', 'EUC-CN');
-*/
+var Json2csv = require('json2csv').Parser;
+//var Iconv  = require('iconv').Iconv;
+//var utf2euckr = new Iconv('UTF-8', 'EUC-KR');
+//var utf2euccn = new Iconv('UTF-8', 'EUC-CN');
 var fs = require('fs');
 var flatten = require('flat');
 var json2xls = require('json2xls');
@@ -19,6 +17,7 @@ app.set('port', (process.env.PORT || config.port));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.use(express.static(path.join(__dirname, 'public')));
 
 var ApiClient = require('./api-client/top-sdk/index').ApiClient;
 
@@ -55,7 +54,7 @@ client.execute('taobao.item.seller.get', {
 console.log("Testing taobao.trades.sold.get");
 client.execute('taobao.trades.sold.get', {
   'session' :'61000051ff9e5102f2b320f2a2e773f0dafecc6ca1e5bd13031625218',
-  'fields':'created,title,buyer_nick,pay_time,status,receiver_name,receiver_mobile,receiver_zip,receiver_state,receiver_city,receiver_district,receiver_address,orders.outer_sku_id,payment,num,orders.title',
+  'fields':{tid,created,buyer_nick,pay_time,status,receiver_name,receiver_mobile,receiver_zip,receiver_state,receiver_city,receiver_district,receiver_address,orders_outer_sku_id,payment,num,orders_title,
   'start_created':'2018-04-11 00:00:00',
 //'end_created':'2018-03-30 23:59:59',
   'status':'WAIT_SELLER_SEND_GOODS',
@@ -67,6 +66,7 @@ client.execute('taobao.trades.sold.get', {
 }, function(error, response) {
   if (!error) {
     var Orders = response.trades.trade;
+//    console.log(Orders);
 
     var flattenOrders = [];
     Orders.forEach(function(element){
@@ -74,10 +74,12 @@ client.execute('taobao.trades.sold.get', {
       flattenOrders.push((flatten(element)));
       }
     });
+});
 
 /* GET home page. */
-var tablebody = require('tableify');
-var html = tablebody(flattenOrders);
+//var tablebody = require('tablebody');
+
+//var html = tablebody(flattenOrders);
 
 fields = [{label: 'order number', value: 'tid'},
 {label: '상태', value:'status'},{label:'SKU', value:'orders.order_0.outer_sku_id'},
@@ -92,34 +94,27 @@ var orderCsv = new Json2csv({ fields });
 var csv = orderCsv.parse(flattenOrders, { fields });
  
 console.log(csv);
-html = tablebody(flattenOrders);
+  }
+/*
+
 
 app.get('/', function(req, res, next) {
   res.render('index', { 
     title: 'KEYCLUE 주문수집시스템',
     notice: '주문일자와 범위를 입력하십시오.',
-    table: html
+    table: csv
    });
 });
 
-/*
-    fields = [{label: 'order number', value: 'tid'},
-    {label: '상태', value:'status'},{label:'SKU', value:'orders_order_0_outer_sku_id'},
-    {label:'상품영',value:'orders_order_0_title'},
-    {label: '지불액', value:'payment'},{label:'배송타입',value:'shipping_type'},
-    {label:'Receiver',value:'receiver_name'},{label:'Province',value:'receiver_state'},
-    {label:'시',value:'receiver_city'},{label:'구',value:'receiver_district'},
-    {label:'주소',value:'receiver_address'},{label:'우편번호',value:'receiver_zip'},
-    {label:'mobile phone',value:'receiver_mobile'}];
-*/
-      var xls = json2xls(flattenOrders,{ 
-        fields: ['created','title','buyer_nick','pay_time','receiver_name','receiver_mobile','receiver_zip','receiver_state','receiver_city','receiver_district','receiver_address','orders_order_0_outer_sku_id','payment','num','orders_order_0_title']
+/*      var xls = json2xls(csv,{ 
+        fields: ['created','title','buyer_nick','pay_time','receiver_name','receiver_mobile','receiver_zip','receiver_state',
+        'receiver_city','receiver_district','receiver_address','orders_order_0_outer_sku_id','payment','num','orders_order_0_title']
       });
       
       fs.writeFileSync('tmallOrders.xlsx', xls, 'binary');
   }
   console.log(error);
-});
+});*/
 
 /*
 client.execute('taobao.trade.fullinfo.get', {
@@ -146,7 +141,6 @@ client.execute('taobao.product.get', {
   else console.log(error);
 });
 */
-
 //tells our application to listen on the specified port
-app.listen(config.port);
-console.log("App running on port " + config.port);
+//app.listen(config.port);
+//console.log("App running on port " + config.port)

@@ -1,51 +1,45 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<style>
-#box
- {
- width:350px;
- height:270px;
- margin:0px auto;
- border:2px solid black;
- background:#aaccdd
- }
- h2{
- text-align: center;
- }
- table{
- margin:0px auto;
- 
- }
-</style>
- </head>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <meta charset="utf-8">
+  <title>Order Management System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="assets/css/bootstrap-responsive.min.css" rel="stylesheet">
+  <link href="assets/css/unseen.css" rel="stylesheet" id="unseen">
+  <link href="assets/css/flip-scroll.css" rel="stylesheet" id="flip-scroll">
+  <link href="assets/css/no-more-tables.css" rel="stylesheet" id="no-more-tables">
+  <link href="assets/css/prettify.css" rel="stylesheet" id="prettify">
+<!------ Include the above in your HEAD tag ---------->
+</head>
 <body>
- <form align="center" method="post" enctype="multipart/form-data">
- <div id="box">
-     <h2><center>Crop Images</center></h2>
-     <table>
- <tr>
- <td>
- <input type="file" name="myimage1" /><br/><br/>
- </td>
- </tr>
- <tr>
- <td>
- <input type="file" name="myimage2" /><br/><br/>
-     </td>
- </tr>
- <tr>
- <td>
- <input type="file" name="myimage3" /><br/><br/>
- </td>
- </tr>
- <tr>
- <td>
- <center>
- <input type="submit" name="submit" value="submit"></center>
- </td>
- </tr>
- </table>
- </div>
- </form>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+        
+            <h1 class="text-center">
+              <%= title %>
+            </h1>
+            <h3 class="text-center">
+                <%=notice%>
+            </h3>
+<!--        </div>
+        <div id="no-more-tables">
+                <%- table %>
+        </div>
+        </div>
+    </div> -->
+    </div>
+    <section id=unseen>
+            <%- table %>
+    </section>
+    <div class="row">
+        <p class="bg-success" style="padding:10px;margin-top:20px"><small>
+        <a href="http://elvery.net/demo/responsive-tables/#no-more-tables" target="_blank">Link
+        </a> to original article</small></p>
+    </div>
+    </div>    
+</div>
 </body>
-</html>
